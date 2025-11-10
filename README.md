@@ -293,7 +293,7 @@ Ce projet est distribué sous la licence [MIT](./LICENSE).
 
 **Farouk Talha**  
 - GitHub : [@farouk10](https://github.com/farouk10)
-- Repo Backend : [student-management-api](https://github.com/farouk10/student-management-api)
+- Repo Backend : [student-management-rest-api](https://github.com/farouk10/student-management-rest-api)
 
 ---
 
