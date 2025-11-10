@@ -1,0 +1,143 @@
+<!-- src/app/components/user-list/user-list.component.html -->
+<div class="container-fluid">
+    <div class="row mb-4 align-items-center">
+      <div class="col">
+        <h2 class="mb-0">Gestion des Utilisateurs</h2>
+        <small class="text-muted">Manage users — edit, search and remove with confidence</small>
+      </div>
+      <div class="col-auto">
+        <button class="btn btn-primary" routerLink="/admin/users/new">
+          <i class="fas fa-plus me-2"></i> Nouvel Utilisateur
+        </button>
+      </div>
+    </div>
+  
+    <!-- Search Bar -->
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <div class="input-group shadow-sm">
+          <span class="input-group-text" aria-hidden="true"><i class="fas fa-search"></i></span>
+          <input type="text"
+                 class="form-control"
+                 placeholder="Search by first name, last name or email..."
+                 [(ngModel)]="searchTerm"
+                 (input)="searchUsers()"
+                 (keyup.enter)="searchUsers()"
+                 aria-label="Search users">
+          <button class="btn btn-outline-secondary" *ngIf="searchTerm" (click)="clearSearch()" aria-label="Clear search">
+            <i class="fas fa-times"></i>
+          </button>
+          <span class="input-group-text" *ngIf="isSearching" title="Searching...">
+            <i class="fas fa-spinner fa-spin"></i>
+          </span>
+        </div>
+        <small class="text-muted">Tip: press Enter to search or click the clear icon to reset.</small>
+      </div>
+    </div>
+  
+    <!-- Loading Spinner -->
+    <div *ngIf="isLoading" class="text-center py-5">
+      <div class="spinner-border" role="status">
+        <span class="visually-hidden">Chargement...</span>
+      </div>
+    </div>
+  
+    <!-- Users Table -->
+    <div *ngIf="!isLoading" class="card">
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Utilisateur</th>
+                <th>Email</th>
+                <th>Rôle</th>
+                <th>Statut</th>
+                <th>Créé le</th>
+                <th class="text-end">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let user of filteredUsers">
+                <td class="mono small">{{ user._id | slice:0:8 }}...</td>
+  
+                <td>
+                  <div class="d-flex align-items-center gap-2">
+                    <div class="avatar-sm" [style.background-color]="getAvatarColor(user)">
+                      {{ getAvatarInitials(user) }}
+                    </div>
+                    <div>
+                      <div [innerHTML]="highlight(user.prenom + ' ' + user.nom)"></div>
+                    </div>
+                  </div>
+                </td>
+  
+                <td>
+                  <div [innerHTML]="highlight(user.email)"></div>
+                </td>
+  
+                <td>
+                  <span [class]="getRoleBadgeClass(user.role)">{{ user.role }}</span>
+                </td>
+  
+                <td>
+                  <span [class]="getStatusInfo(user).class">{{ getStatusInfo(user).text }}</span>
+                </td>
+  
+                <td>
+                  {{ user.createdAt ? (user.createdAt | date:'dd/MM/yyyy') : 'N/A' }}
+                </td>
+  
+                <td class="text-end">
+                  <div class="btn-group" role="group" aria-label="User actions">
+                    <button class="btn btn-sm btn-outline-primary" (click)="editUser(user)" title="Edit user">
+                      <i class="fas fa-edit me-1"></i> Edit
+                    </button>
+  
+                    <button class="btn btn-sm btn-outline-danger" (click)="confirmDelete(user)" [disabled]="isSelf(user)" title="Delete user">
+                      <i class="fas fa-trash me-1"></i> Delete
+                    </button>
+
+                    <button class="btn btn-sm btn-outline-danger" [routerLink]="['/admin/users/confirm']" [queryParams]="{id: user._id}" [disabled]="isSelf(user)"> <i class="fas fa-trash"></i> </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+  
+        <!-- Empty State -->
+        <div *ngIf="filteredUsers.length === 0" class="text-center py-4">
+          <i class="fas fa-users fa-3x text-muted mb-3"></i>
+          <p class="text-muted">No users found</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Delete Confirmation Modal (inline) -->
+  <div class="modal fade show d-block" tabindex="-1" *ngIf="showDeleteModal" style="background: rgba(0,0,0,0.35);">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Confirm Delete</h5>
+          <button type="button" class="btn-close" aria-label="Close" (click)="cancelDelete()"></button>
+        </div>
+        <div class="modal-body">
+          <p *ngIf="userToDelete">
+            Are you sure you want to delete <strong>{{ userToDelete.prenom }} {{ userToDelete.nom }}</strong>?
+          </p>
+          <p class="text-muted small">This action cannot be undone.</p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" (click)="cancelDelete()" [disabled]="isDeleting">Cancel</button>
+          <button class="btn btn-danger" (click)="deleteUserConfirmed()" [disabled]="isDeleting">
+            <span *ngIf="isDeleting" class="spinner-border spinner-border-sm me-2" role="status"></span>
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  

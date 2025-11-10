@@ -1,0 +1,271 @@
+<!-- etudiant-list -->
+<div class="container mt-4">
+    <!-- Header -->
+    <div class="row mb-4">
+      <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <h1 class="display-5 fw-bold text-primary">
+              <i class="bi bi-people-fill me-2"></i>Gestion des Étudiants
+            </h1>
+            <p class="lead mb-0" *ngIf="isAdmin()">Administration complète des étudiants</p>
+            <p class="lead mb-0" *ngIf="!isAdmin()">Liste des étudiants</p>
+          </div>
+          <!-- Only show "Nouvel Étudiant" button for admin users -->
+          <button class="btn btn-primary" routerLink="/etudiants/new" *ngIf="isAdmin()">
+            <i class="bi bi-plus-circle me-2"></i>Nouvel Étudiant
+          </button>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Search Bar -->
+    <div class="row mb-4">
+      <div class="col-md-8">
+        <div class="input-group">
+          <span class="input-group-text">
+            <i class="bi bi-search"></i>
+          </span>
+          <input type="text" class="form-control" placeholder="Rechercher un étudiant par nom, prénom, email ou matière..." 
+                 [(ngModel)]="searchTerm" 
+                 (input)="onSearchInput()"
+                 (keyup.enter)="onSearch()">
+          <button *ngIf="searchTerm" class="btn btn-outline-secondary" type="button" 
+                  (click)="clearSearch()" title="Effacer la recherche">
+            <i class="bi bi-x"></i>
+          </button>
+          <button class="btn btn-primary" type="button" (click)="onSearch()">
+            <i class="bi bi-search me-1"></i>Rechercher
+          </button>
+        </div>
+        <div class="form-text">
+          Recherche dans tous les étudiants (nom, prénom, email, matières)
+        </div>
+      </div>
+      <div class="col-md-4 text-md-end">
+        <span class="badge bg-secondary fs-6">
+          {{ totalItems }} étudiant(s) trouvé(s)
+          <span *ngIf="searchTerm" class="ms-1">pour "{{ searchTerm }}"</span>
+        </span>
+      </div>
+    </div>
+  
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="text-center py-5">
+      <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+        <span class="visually-hidden">Chargement...</span>
+      </div>
+      <p class="mt-3 text-muted">Chargement des étudiants...</p>
+    </div>
+  
+    <!-- Error State -->
+    <div *ngIf="errorMessage && !isLoading" class="alert alert-danger">
+      <i class="bi bi-exclamation-triangle me-2"></i>{{ errorMessage }}
+      <button class="btn btn-sm btn-outline-danger ms-3" (click)="loadEtudiants()">
+        Réessayer
+      </button>
+    </div>
+  
+    <!-- Empty State -->
+    <div *ngIf="!isLoading && etudiants.length === 0 && !errorMessage" class="text-center py-5">
+      <i class="bi bi-inbox display-1 text-muted"></i>
+      <h4 class="text-muted mt-3">
+        <span *ngIf="searchTerm">Aucun étudiant trouvé pour "{{ searchTerm }}"</span>
+        <span *ngIf="!searchTerm">Aucun étudiant trouvé</span>
+      </h4>
+      <p class="text-muted" *ngIf="searchTerm">
+        Essayez avec d'autres termes de recherche
+      </p>
+      <button *ngIf="searchTerm" class="btn btn-outline-primary mt-3" (click)="clearSearch()">
+        <i class="bi bi-arrow-counterclockwise me-2"></i>Afficher tous les étudiants
+      </button>
+      <button class="btn btn-primary mt-3" routerLink="/etudiants/new" *ngIf="isAdmin() && !searchTerm">
+        <i class="bi bi-plus-circle me-2"></i>Ajouter le premier étudiant
+      </button>
+    </div>
+  
+    <!-- Students Cards Grid -->
+    <div *ngIf="!isLoading && etudiants.length > 0" class="row">
+      <div class="col-xl-4 col-lg-6 col-md-6 mb-4" *ngFor="let etudiant of etudiants">
+        <div class="card student-card h-100" 
+             [class.selected]="isSelected(etudiant)"
+             [class.clickable]="isAdmin()"
+             (click)="selectStudent(etudiant)">
+          
+          <!-- Student Card Header with Avatar -->
+          <!-- Student Photo or Avatar -->
+<div class="card-header bg-transparent border-0 pb-0">
+  <div class="d-flex align-items-center">
+    <!-- ✅ Show photo if available, else fallback to avatar -->
+    <div class="me-3">
+      <img *ngIf="etudiant.photo"
+           [src]="etudiant.photo"
+           alt="Photo de {{ etudiant.prenom }}"
+           class="rounded-circle border"
+           style="width: 60px; height: 60px; object-fit: cover;">
+      <div *ngIf="!etudiant.photo"
+           class="avatar-circle d-flex align-items-center justify-content-center text-white"
+           [style.background-color]="getAvatarColor(etudiant)"
+           style="width: 60px; height: 60px;">
+        {{ getAvatarInitials(etudiant) }}
+      </div>
+    </div>
+
+    <!-- Student Basic Info -->
+    <div class="flex-grow-1">
+      <h5 class="card-title mb-1">{{ etudiant.prenom }} {{ etudiant.nom }}</h5>
+      <p class="card-text text-muted small mb-0">ID: {{ etudiant.id }}</p>
+    </div>
+
+    <!-- Status Badge -->
+    <span class="badge bg-primary">{{ getMatiereCount(etudiant) }}</span>
+  </div>
+</div>
+
+  
+          <!-- Student Card Body -->
+          <div class="card-body pt-2">
+            <!-- Email -->
+            <div class="mb-3">
+              <i class="bi bi-envelope me-2 text-muted"></i>
+              <!-- <a [href]="'mailto:' + etudiant.email" class="text-decoration-none"> -->
+              <a class="text-decoration-none">
+
+                {{ etudiant.email }}
+              </a>
+            </div>
+  
+            <!-- Matières -->
+            <div class="mb-3">
+              <h6 class="small text-muted mb-2">
+                <i class="bi bi-book me-1"></i>Matières suivies:
+              </h6>
+              <div class="d-flex flex-wrap gap-1">
+                <span class="badge bg-light text-dark small" 
+                      *ngFor="let matiere of getDisplayedMatieres(etudiant)">
+                  {{ matiere }}
+                </span>
+                
+                <!-- Show More/Less Toggle -->
+                <span *ngIf="hasMoreMatieres(etudiant)" 
+                      class="badge small clickable-badge"
+                      [class.bg-secondary]="!isMatieresExpanded(etudiant)"
+                      [class.bg-primary]="isMatieresExpanded(etudiant)"
+                      (click)="toggleMatieres(etudiant, $event)">
+                  <span *ngIf="!isMatieresExpanded(etudiant)">
+                    +{{ getRemainingMatieresCount(etudiant) }}
+                  </span>
+                  <span *ngIf="isMatieresExpanded(etudiant)">
+                    <i class="bi bi-chevron-up me-1"></i>Voir moins
+                  </span>
+                </span>
+                
+                <span *ngIf="etudiant.matiere.length === 0" class="text-muted small">
+                  Aucune matière
+                </span>
+              </div>
+              
+              <!-- Show count when expanded -->
+              <div *ngIf="isMatieresExpanded(etudiant)" class="mt-2">
+                <small class="text-muted">
+                  {{ etudiant.matiere.length }} matière(s) au total
+                </small>
+              </div>
+            </div>
+  
+            <!-- Action Buttons (Visible when selected and user is admin) -->
+            <div class="actions-panel mt-3" *ngIf="isSelected(etudiant) && isAdmin()">
+              <div class="d-grid gap-2">
+                <button class="btn btn-outline-primary btn-sm" 
+                        (click)="editEtudiant(etudiant); $event.stopPropagation()">
+                  <i class="bi bi-pencil me-1"></i>Modifier
+                </button>
+                <button class="btn btn-outline-danger btn-sm" 
+                        (click)="deleteEtudiant(etudiant); $event.stopPropagation()">
+                  <i class="bi bi-trash me-1"></i>Supprimer
+                </button>
+              </div>
+            </div>
+  
+            <!-- Hint for Admin (Visible when not selected and user is admin) -->
+            <div class="text-center" *ngIf="!isSelected(etudiant) && isAdmin()">
+              <small class="text-muted">
+                <i class="bi bi-mouse me-1"></i>Cliquer pour les actions
+              </small>
+            </div>
+  
+            <!-- Info for Non-Admin Users -->
+            <div class="text-center" *ngIf="!isAdmin()">
+              <small class="text-muted">
+                <i class="bi bi-eye me-1"></i>Vue lecture seule
+              </small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+<!-- Pagination Controls -->
+<div *ngIf="!isLoading && etudiants.length > 0" class="row mt-4">
+  <div class="col-12">
+    <nav aria-label="Pagination des étudiants">
+      <ul class="pagination justify-content-center">
+        <!-- Previous Button -->
+        <li class="page-item" [class.disabled]="!hasPrev">
+          <a class="page-link" href="#" (click)="prevPage(); $event.preventDefault()" 
+             [class.text-muted]="!hasPrev">
+            <i class="bi bi-chevron-left"></i> Précédent
+          </a>
+        </li>
+
+        <!-- First Page (only show if not in main page numbers) -->
+        <li class="page-item" *ngIf="shouldShowFirstPage()">
+          <a class="page-link" href="#" (click)="goToPage(1); $event.preventDefault()">1</a>
+        </li>
+        
+        <!-- Start Ellipsis -->
+        <li class="page-item disabled" *ngIf="shouldShowStartEllipsis()">
+          <span class="page-link">...</span>
+        </li>
+
+        <!-- Page Numbers -->
+        <li class="page-item" *ngFor="let page of getPageNumbers()" 
+            [class.active]="page === currentPage">
+          <a class="page-link" href="#" 
+             (click)="goToPage(page); $event.preventDefault()">
+            {{ page }}
+          </a>
+        </li>
+
+        <!-- End Ellipsis -->
+        <li class="page-item disabled" *ngIf="shouldShowEndEllipsis()">
+          <span class="page-link">...</span>
+        </li>
+
+        <!-- Last Page (only show if not in main page numbers) -->
+        <li class="page-item" *ngIf="shouldShowLastPage()">
+          <a class="page-link" href="#" 
+             (click)="goToPage(totalPages); $event.preventDefault()">
+            {{ totalPages }}
+          </a>
+        </li>
+
+        <!-- Next Button -->
+        <li class="page-item" [class.disabled]="!hasNext">
+          <a class="page-link" href="#" (click)="nextPage(); $event.preventDefault()"
+             [class.text-muted]="!hasNext">
+            Suivant <i class="bi bi-chevron-right"></i>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Pagination Info -->
+    <div class="text-center mt-2">
+      <small class="text-muted">
+        Page {{ currentPage }} sur {{ totalPages }} - 
+        {{ totalItems }} étudiant(s) au total
+      </small>
+    </div>
+  </div>
+</div>

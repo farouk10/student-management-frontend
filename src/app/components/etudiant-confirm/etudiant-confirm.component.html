@@ -1,0 +1,127 @@
+<!-- src/app/components/etudiant-confirm/etudiant-confirm.component.html -->
+
+
+<!-- etudiant-confirm -->
+<div class="container mt-4">
+    <div class="row justify-content-center">
+      <div class="col-lg-10">
+        <!-- Header -->
+        <div class="text-center mb-5">
+          <div class="avatar-confirm mb-4" 
+               [style.background-color]="getAvatarColor()">
+            {{ getAvatarInitials() }}
+          </div>
+          <h1 class="display-5 fw-bold text-primary">
+            <i [ngClass]="isEditing ? 'bi bi-pencil-square' : 'bi bi-person-plus'"></i>
+            {{ isEditing ? "Confirmer la modification de l'étudiant" : "Confirmer l'ajout de l'étudiant" }}
+          </h1>
+          <p class="lead text-muted">
+            Vérifiez les détails de l'étudiant avant de l'ajouter au système.
+          </p>
+        </div>
+  
+        <!-- Error State -->
+        <div *ngIf="errorMessage" class="alert alert-danger text-center">
+          <i class="bi bi-exclamation-triangle me-2"></i>{{ errorMessage }}
+        </div>
+  
+        <!-- Student Details (Read-only View) -->
+        <div *ngIf="etudiantData && !isEditing" class="card shadow-lg border-primary">
+          <div class="card-header bg-primary text-white">
+            <h5 class="card-title mb-0">
+              <i class="bi bi-person-badge me-2"></i>Détails de l'Étudiant
+              <span class="badge bg-warning ms-2">En attente de confirmation</span>
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <!-- Personal Information -->
+              <div class="col-md-6">
+                <div class="card h-100">
+                  <div class="card-header bg-light">
+                    <h6 class="card-title mb-0">
+                      <i class="bi bi-info-circle me-2"></i>Informations Personnelles
+                    </h6>
+                  </div>
+                  <div class="card-body">
+                    <div class="mb-3">
+                      <label class="form-label text-muted small mb-1">Prénom</label>
+                      <p class="fw-bold fs-6">{{ etudiantData.prenom }}</p>
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label text-muted small mb-1">Nom</label>
+                      <p class="fw-bold fs-6">{{ etudiantData.nom }}</p>
+                    </div>
+                    <div>
+                      <label class="form-label text-muted small mb-1">Email</label>
+                      <p class="fw-bold fs-6">
+                        {{ etudiantData.email }}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+  
+              <!-- Matières -->
+              <div class="col-md-6">
+                <div class="card h-100">
+                  <div class="card-header bg-light">
+                    <h6 class="card-title mb-0">
+                      <i class="bi bi-book me-2"></i>Matières Suivies
+                      <span class="badge bg-primary ms-2">{{ etudiantData.matiere.length }}</span>
+                    </h6>
+                  </div>
+                  <div class="card-body">
+                    <div *ngIf="etudiantData.matiere.length > 0" class="d-flex flex-wrap gap-2">
+                      <span class="badge bg-primary py-2 px-3 fs-6" 
+                            *ngFor="let matiere of etudiantData.matiere">
+                        <i class="bi bi-bookmark me-1"></i>{{ matiere }}
+                      </span>
+                    </div>
+                    <div *ngIf="etudiantData.matiere.length === 0" class="text-center text-muted py-4">
+                      <i class="bi bi-book display-4 d-block mb-2"></i>
+                      Aucune matière assignée
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+  
+            <!-- Action Buttons -->
+            <div class="d-flex gap-3 justify-content-center mt-4 pt-4 border-top">
+              <button class="btn btn-outline-warning btn-lg" (click)="startEditing()">
+                <i class="bi bi-pencil me-2"></i>Modifier les Informations
+              </button>
+              <button class="btn btn-outline-secondary btn-lg" (click)="cancelAndGoBack()">
+                <i class="bi bi-x-circle me-2"></i>Annuler
+              </button>
+              <button class="btn btn-success btn-lg" 
+                      (click)="confirmAndAdd()"
+                      [disabled]="isLoading">
+                <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
+                <i class="bi bi-check-circle me-2" *ngIf="!isLoading"></i>
+                {{ isLoading ? 'Ajout en cours...' : 'Confirmer et Ajouter' }}
+              </button>
+            </div>
+          </div>
+        </div>
+  
+        <!-- Edit Form (When Editing) -->
+        <div *ngIf="etudiantData && isEditing" class="card shadow-lg border-warning">
+          <div class="card-header bg-warning text-dark">
+            <h5 class="card-title mb-0">
+              <i class="bi bi-pencil-square me-2"></i>Modifier les Informations
+            </h5>
+          </div>
+          <div class="card-body">
+            <app-etudiant-form 
+              [etudiantData]="etudiantData"
+              [isEditMode]="false"
+              (studentUpdated)="onStudentUpdated($event)"
+              (cancel)="cancelEditing()">
+            </app-etudiant-form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

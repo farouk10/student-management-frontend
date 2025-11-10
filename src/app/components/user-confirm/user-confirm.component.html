@@ -1,0 +1,74 @@
+<!-- src/app/components/user-confirm/user-confirm.component.html -->
+<div class="container mt-4">
+    <div class="row justify-content-center">
+      <div class="col-lg-6">
+        <!-- Header -->
+        <div class="text-center mb-4">
+          <h1 class="display-6 fw-bold text-danger">
+            <i class="fas fa-exclamation-triangle me-2"></i>Confirmation
+          </h1>
+          <p class="lead">Confirmer la suppression d'utilisateur</p>
+        </div>
+  
+        <!-- Loading State -->
+        <div *ngIf="isLoading" class="text-center py-5">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Chargement...</span>
+          </div>
+          <p class="mt-3 text-muted">Chargement des données...</p>
+        </div>
+  
+        <!-- Confirmation Card -->
+        <div *ngIf="!isLoading && user" class="card shadow border-danger">
+          <div class="card-body p-4 text-center">
+            <!-- Warning Icon -->
+            <div class="mb-4">
+              <i class="fas fa-exclamation-circle fa-4x text-warning"></i>
+            </div>
+  
+            <!-- Warning Message -->
+            <h4 class="text-danger mb-3">Êtes-vous sûr de vouloir supprimer cet utilisateur ?</h4>
+            
+            <!-- User Details -->
+            <div class="alert alert-info text-start">
+              <strong>Utilisateur concerné :</strong><br>
+              <i class="fas fa-user me-2"></i>{{ user.prenom }} {{ user.nom }}<br>
+              <i class="fas fa-envelope me-2"></i>{{ user.email }}<br>
+              <i class="fas fa-user-tag me-2"></i>{{ user.role === 'admin' ? 'Administrateur' : 'Utilisateur' }}
+            </div>
+  
+            <!-- Additional Warnings -->
+            <div *ngIf="isDeletingSelf" class="alert alert-warning">
+              <i class="fas fa-warning me-2"></i>
+              <strong>Attention !</strong> Vous êtes sur le point de supprimer votre propre compte.
+              Cette action est irréversible et vous serez immédiatement déconnecté.
+            </div>
+  
+            <div *ngIf="!isDeletingSelf" class="alert alert-warning">
+              <i class="fas fa-info-circle me-2"></i>
+              Cette action est irréversible. L'utilisateur sera définitivement supprimé du système.
+            </div>
+  
+            <!-- Action Buttons -->
+            <div class="d-flex gap-2 justify-content-center mt-4">
+              <button 
+                type="button" 
+                class="btn btn-outline-secondary" 
+                (click)="cancel()"
+                [disabled]="isDeleting">
+                <i class="fas fa-times me-2"></i>Annuler
+              </button>
+              <button 
+                type="button" 
+                class="btn btn-danger" 
+                (click)="confirmDelete()"
+                [disabled]="isDeleting">
+                <i class="fas fa-trash me-2"></i>
+                {{ isDeleting ? 'Suppression...' : 'Confirmer la suppression' }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

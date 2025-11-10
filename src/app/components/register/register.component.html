@@ -1,0 +1,89 @@
+<!-- register -->
+<div class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-md-6 col-lg-4">
+        <div class="card shadow">
+          <div class="card-body p-4">
+            <div class="text-center mb-4">
+              <i class="bi bi-person-plus text-primary mb-3" style="font-size: 3rem;"></i>
+              <h2 class="card-title">Inscription</h2>
+              <p class="text-muted">Créez votre compte</p>
+            </div>
+  
+            <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="nom" class="form-label">Nom</label>
+                  <input type="text" class="form-control" id="nom" 
+                         formControlName="nom"
+                         [class.is-invalid]="registerForm.get('nom')?.invalid && registerForm.get('nom')?.touched">
+                  <div class="invalid-feedback" *ngIf="registerForm.get('nom')?.errors?.['required']">
+                    Le nom est requis
+                  </div>
+                  <div class="invalid-feedback" *ngIf="registerForm.get('nom')?.errors?.['minlength']">
+                    Minimum 2 caractères
+                  </div>
+                </div>
+  
+                <div class="col-md-6 mb-3">
+                  <label for="prenom" class="form-label">Prénom</label>
+                  <input type="text" class="form-control" id="prenom" 
+                         formControlName="prenom"
+                         [class.is-invalid]="registerForm.get('prenom')?.invalid && registerForm.get('prenom')?.touched">
+                  <div class="invalid-feedback" *ngIf="registerForm.get('prenom')?.errors?.['required']">
+                    Le prénom est requis
+                  </div>
+                  <div class="invalid-feedback" *ngIf="registerForm.get('prenom')?.errors?.['minlength']">
+                    Minimum 2 caractères
+                  </div>
+                </div>
+              </div>
+  
+              <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" 
+                       formControlName="email"
+                       [class.is-invalid]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
+                <div class="invalid-feedback" *ngIf="registerForm.get('email')?.errors?.['required']">
+                  L'email est requis
+                </div>
+                <div class="invalid-feedback" *ngIf="registerForm.get('email')?.errors?.['email']">
+                  Format d'email invalide
+                </div>
+              </div>
+  
+              <div class="mb-3">
+                <label for="password" class="form-label">Mot de passe</label>
+                <input type="password" class="form-control" id="password" 
+                       formControlName="password"
+                       [class.is-invalid]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
+                <div class="invalid-feedback" *ngIf="registerForm.get('password')?.errors?.['required']">
+                  Le mot de passe est requis
+                </div>
+                <div class="invalid-feedback" *ngIf="registerForm.get('password')?.errors?.['minlength']">
+                  Minimum 6 caractères
+                </div>
+              </div>
+  
+              <div class="alert alert-danger" *ngIf="errorMessage">
+                {{ errorMessage }}
+              </div>
+  
+              <button type="submit" class="btn btn-primary w-100 py-2" 
+                      [disabled]="registerForm.invalid || isLoading">
+                <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
+                {{ isLoading ? 'Inscription...' : 'S\'inscrire' }}
+              </button>
+            </form>
+  
+            <div class="text-center mt-3">
+              <p class="mb-0">
+                Déjà un compte ? 
+                <a routerLink="/login" class="text-decoration-none">Se connecter</a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

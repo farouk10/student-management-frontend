@@ -1,0 +1,61 @@
+modification de la fonction add sur le controleur
+
+export async function AddEtudiantwithphoto(req,res,next){
+    try{
+        const {id, nom, email, matiere } = req.body;
+        const photoUrl = req.file ? `httpl://localhost:3000/uploads/$(req.file.filename)` : null;
+        const newStudent = (id,nom,prenom,email,photo: photoUrl),
+        matriere: matriere ? JSON.parse(matriere) : [],
+        createAt: new Date()
+    };
+    const Etu = new Etudiant(newStudent);
+    await Etu.save()
+}
+
+
+
+
+const storage = multer.diskStorage({
+    destination: (req,file, cb) => {cb (null,'uploads/');
+    },
+    filename: (req, file, cb)=> {
+        cb(null, Date.nom()+path.extname(file.originalname));
+    }
+});
+const upload = multer({storage: storage});
+
+configuration de multer:
+destination: peremt de specifier le dossier ou Multer doit stocker les fichiers uploades.
+filename: permet de determiner le nom du fichier final sur le disque.
+
+mettre le middleware sur la route:
+mounrouter.post('/',Authentification,upload.single('photo',AddEtudiantwithphoto))
+.
+
+upload d'un fichier 
+cote frontend
+modification sur le service le submit du formulaire
+
+onSubmit(): void {
+    const formData = new FormData();
+    formData.append('id',this.etudiantForm.get('id')?.value);
+    formData.append('nom', this.etudiantForm.get('nom')?.value);
+    formData.append('prenom', this.etudiantForm.get('prenom')?.value);
+    formData.append('email', this.etudiantForm.get('email')?.value);
+    formData.append('matiere', JSON.stringfy(this.matiereFormArrat.value));
+
+    if(this.selectedFile){
+        formData.append('photo',this.selectedFile);
+    }
+
+}
+
+modification sur le service etudiantForm
+AddEtudiantwithphoto(formData: FormData: FormData): Observable<Etudiant>{
+    return this.http.post<Etudiant>(this.apiUrl, formData).pipe(
+        tap((resp)=> console.log(Etudinat ajouter avec photo:', resp)),
+        catchError((error)=>{
+            console.error('Errer lors de l'ajout avec photo:',error);
+        })
+    );
+}

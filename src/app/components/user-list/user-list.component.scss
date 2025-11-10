@@ -1,0 +1,94 @@
+// src/app/components/user-list/user-list.component.scss
+.table {
+    th {
+      border-top: none;
+      font-weight: 600;
+      background-color: #f8f9fa;
+    }
+    
+    td {
+      vertical-align: middle;
+    }
+  }
+  
+  .badge {
+    font-size: 0.75em;
+    font-weight: 500;
+  }
+  
+  .btn-group {
+    .btn {
+      margin-right: 0.25rem;
+      
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+  }
+  
+  .card {
+    border: none;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  }
+
+  // src/app/components/user-list/user-list.component.scss
+.table {
+    th {
+      border-top: none;
+      font-weight: 600;
+      background-color: #f8f9fa;
+    }
+    
+    td {
+      vertical-align: middle;
+    }
+  }
+  
+  .badge {
+    font-size: 0.75em;
+    font-weight: 500;
+  }
+  
+  .btn-group {
+    .btn {
+      margin-right: 0.25rem;
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+  }
+  
+  .card {
+    border: none;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  }
+  
+  /* Avatar */
+  .avatar-sm {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    color: white;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.95rem;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  }
+  
+  /* small monospace id */
+  .mono {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;
+  }
+  
+  /* Modal override so inline modal centers */
+  .modal {
+    display: block;
+  }
+  
+  /* Improve input group */
+  .input-group .form-control {
+    min-height: 42px;
+  }
+  

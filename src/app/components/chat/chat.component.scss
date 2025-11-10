@@ -1,0 +1,101 @@
+:host {
+    height: calc(100vh - 76px);
+    display: block;
+  }
+  
+  .chat-messages {
+    overflow-y: auto;
+    max-height: 60vh;
+    background-color: #f8f9fa;
+  }
+  
+  .message {
+    &.message-current {
+      .message-content {
+        margin-left: 20%;
+      }
+    }
+  
+    &.message-other {
+      .message-content {
+        margin-right: 20%;
+      }
+    }
+  }
+  
+  .message-content {
+    word-wrap: break-word;
+    white-space: pre-wrap;
+  }
+  
+  .user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 0.9rem;
+  }
+  
+  .user-avatar-small {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 0.8rem;
+  }
+  
+  .online-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+  
+  .message-input {
+    background-color: white;
+    border-top: 1px solid #dee2e6;
+  }
+  
+  // Scrollbar styling
+  .chat-messages::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .chat-messages::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+  
+  .chat-messages::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+  }
+  
+  .chat-messages::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+  }
+  
+  // Responsive design
+  @media (max-width: 768px) {
+    .col-md-3 {
+      display: none;
+    }
+    
+    .col-md-9 {
+      width: 100%;
+    }
+  
+    .message {
+      &.message-current .message-content,
+      &.message-other .message-content {
+        margin-left: 0;
+        margin-right: 0;
+      }
+    }
+  }
