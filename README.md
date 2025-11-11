@@ -52,7 +52,7 @@ Interface utilisateur Angular pour la gestion d'étudiants avec dashboard admini
 - Node.js (version LTS recommandée)
 - npm ou yarn
 - Angular CLI : `npm install -g @angular/cli`
-- Backend API en cours d'exécution (voir [student-management-api](https://github.com/farouk10/student-management-rest-api))
+- Backend API en cours d'exécution (voir [student-management-rest-api](https://github.com/farouk10/student-management-rest-api))
 
 ---
 
